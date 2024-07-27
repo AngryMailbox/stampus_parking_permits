@@ -22,7 +22,7 @@ Make sure you have the following installed:
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/yourusername/parking-permit-generator.git
+    git clone https://github.com/AngryMailbox/parking-permit-generator.git
     cd parking-permit-generator
     ```
 
