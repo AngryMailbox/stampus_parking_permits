@@ -32,7 +32,7 @@ Make sure you have the following installed:
     pip install -r requirements.txt
     ```
 
-3. Make sure you have `logo.png` and `permits.db` in the same directory as the `GUI.py` script.
+3. Make sure you have `permits.db` in the same directory as the `GUI.py` script.
 
 ## Usage
 
