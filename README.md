@@ -22,7 +22,7 @@ Make sure you have the following installed:
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/AngryMailbox/parking-permit-generator.git
+    git clone https://github.com/AngryMailbox/stampus_parking_permits.git
     cd parking-permit-generator
     ```
 
