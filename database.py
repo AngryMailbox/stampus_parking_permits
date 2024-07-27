@@ -10,7 +10,7 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-DATABASE_NAME = resource_path("parking_permits.db")
+DATABASE_NAME = resource_path("permits.db")
 
 def init_db():
     with sqlite3.connect(DATABASE_NAME) as conn:
