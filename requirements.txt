@@ -1,0 +1,4 @@
+customtkinter
+tkcalendar
+pillow
+sqlite3
