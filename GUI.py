@@ -3,7 +3,6 @@ import sys
 import customtkinter as ctk
 from tkinter import filedialog, messagebox, ttk
 from tkcalendar import DateEntry
-from PIL import ImageTk
 from pathlib import Path
 from parking import create_parking_permit
 import database
@@ -17,14 +16,12 @@ class ParkingPermitGUI:
         
         self.logo_path = self.resource_path("logo.png")
         self.icon_path = self.resource_path("logo.ico")
-        self.root.iconphoto(False, ImageTk.PhotoImage(file=self.logo_path))
         self.root.iconbitmap(self.icon_path)
 
         self.create_widgets()
 
     def create_widgets(self):
-
-        # Input fields
+        # Inputs
         self.name_entry = self.create_entry("Namn/Name")
         self.position_entry = self.create_entry("Befattning/Position")
         self.valid_until_entry = self.create_date_entry("Gäller till/Valid Until")
