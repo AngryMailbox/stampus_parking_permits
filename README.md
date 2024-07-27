@@ -23,7 +23,7 @@ Make sure you have the following installed:
 
     ```sh
     git clone https://github.com/AngryMailbox/stampus_parking_permits.git
-    cd parking-permit-generator
+    cd stampus_parking_permits
     ```
 
 2. Install the required Python packages:
