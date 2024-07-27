@@ -22,8 +22,8 @@ Make sure you have the following installed:
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/yourusername/parking-permit-generator.git
-    cd parking-permit-generator
+    git clone https://github.com/AngryMailbox/stampus_parking_permits.git
+    cd stampus_parking_permits
     ```
 
 2. Install the required Python packages:
@@ -32,7 +32,7 @@ Make sure you have the following installed:
     pip install -r requirements.txt
     ```
 
-3. Make sure you have `logo.png` and `permits.db` in the same directory as the `GUI.py` script.
+3. Make sure you have `permits.db` in the same directory as the `GUI.py` script.
 
 ## Usage
 
