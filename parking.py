@@ -4,6 +4,8 @@ from typing import Tuple, Optional
 import logging
 from pathlib import Path
 from enum import Enum, auto
+import sys
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -40,7 +42,7 @@ class ParkingPermit:
 
     def add_logo(self, logo_path: Path, size: Tuple[int, int], position: Tuple[int, int]):
         try:
-            with Image.open(logo_path) as logo:
+            with Image.open(resource_path(logo_path)) as logo:
                 logo = logo.convert('RGBA')
                 logo.thumbnail(size)
                 self.image.paste(logo, position, logo)
@@ -74,7 +76,7 @@ class ParkingPermit:
 def create_parking_permit(name: str, position: str, permit_number: str, valid_until: str) -> ParkingPermit:
     permit = ParkingPermit((900, 650), bg_color='#FFFFFF')
 
-    permit.add_logo(Path('logo.png'), (100, 100), (50, 50))
+    permit.add_logo(Path(resource_path('logo.png')), (100, 100), (50, 50))
 
     text_configs = [
         TextConfig("Stampus Studentförening", 48, (450, 60), TextAlignment.CENTER, "#000000", 800),
@@ -94,6 +96,14 @@ def create_parking_permit(name: str, position: str, permit_number: str, valid_un
         permit.add_text(config)
 
     return permit
+
+def resource_path(relative_path):
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
 
 if __name__ == "__main__":
     permit = create_parking_permit("Måns Alklint", "Vice Ordförande", "001234", "31/12/2024")
