@@ -1,6 +1,19 @@
 import os
-import sqlite3
 import sys
+from bson import ObjectId
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+from urllib.parse import quote_plus
+from decouple import config
+
+uri_template = config("MONGODB_URI")
+password = config("MONGODB_PASSWORD") 
+encoded_password = quote_plus(password)
+uri = uri_template.replace("<password>", encoded_password)
+
+client = MongoClient(uri, server_api=ServerApi('1'))
+db = client['permits_database']
+collection = db['permits']
 
 def resource_path(relative_path):
     try:
@@ -10,46 +23,32 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-DATABASE_NAME = resource_path("permits.db")
-
 def init_db():
-    with sqlite3.connect(DATABASE_NAME) as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS permits (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL,
-                position TEXT NOT NULL,
-                permit_number TEXT NOT NULL UNIQUE,
-                valid_until TEXT NOT NULL,
-                file_path TEXT NOT NULL
-            )
-        ''')
-        conn.commit()
+    pass
 
 def add_permit(name: str, position: str, valid_until: str, file_path: str) -> str:
-    with sqlite3.connect(DATABASE_NAME) as conn:
-        cursor = conn.cursor()
-        cursor.execute('SELECT MAX(permit_number) FROM permits')
-        max_permit_number = cursor.fetchone()[0]
-        new_permit_number = str(int(max_permit_number) + 1) if max_permit_number else "1024"
-        cursor.execute('''
-            INSERT INTO permits (name, position, permit_number, valid_until, file_path)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (name, position, new_permit_number, valid_until, file_path))
-        conn.commit()
-        return new_permit_number
+    last_permit = collection.find_one(sort=[("permit_number", -1)])
+    new_permit_number = str(int(last_permit["permit_number"]) + 1) if last_permit else "1024"
+    permit = {
+        "name": name,
+        "position": position,
+        "permit_number": new_permit_number,
+        "valid_until": valid_until,
+        "file_path": file_path
+    }
+    collection.insert_one(permit)
+    return new_permit_number
 
 def get_permits():
-    with sqlite3.connect(DATABASE_NAME) as conn:
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM permits')
-        return cursor.fetchall()
+    return list(collection.find())
 
-def delete_permit(permit_id: int):
-    with sqlite3.connect(DATABASE_NAME) as conn:
-        cursor = conn.cursor()
-        cursor.execute('DELETE FROM permits WHERE id = ?', (permit_id,))
-        conn.commit()
+def delete_permit(permit_id: str):
+    try:
+        result = collection.delete_one({"_id": ObjectId(permit_id)})
+        return result.deleted_count
+    except Exception as e:
+        print(f"Error deleting permit: {e}")
+        return 0
 
+# Initialize the database (if necessary)
 init_db()
