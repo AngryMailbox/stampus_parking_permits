@@ -78,7 +78,7 @@ class ParkingPermitGUI:
         permits_window.geometry("700x500")
         permits_window.attributes("-topmost", True)
 
-        columns = ('ID', 'Name', 'Position', 'Permit Number', 'Valid Until', 'File Path')
+        columns = ('_id', 'name', 'position', 'permit_number', 'valid_until', 'file_path')
         tree = ttk.Treeview(permits_window, columns=columns, show='headings')
 
         for col in columns:
@@ -86,7 +86,7 @@ class ParkingPermitGUI:
             tree.column(col, width=100)
 
         for permit in permits:
-            tree.insert('', 'end', values=permit)
+            tree.insert('', 'end', values=(permit['_id'], permit['name'], permit['position'], permit['permit_number'], permit['valid_until'], permit['file_path']))
 
         tree.pack(fill='both', expand=True)
 
@@ -96,18 +96,21 @@ class ParkingPermitGUI:
                 return
             selected_item = tree.selection()[0]
             permit_id = tree.item(selected_item)['values'][0]
-            database.delete_permit(permit_id)
-            tree.delete(selected_item)
-            messagebox.showinfo("Success", "Tillstånd borttaget/Permit deleted", parent=permits_window)
+            print("PERMIT:ID", permit_id)
+            delete_count = database.delete_permit(permit_id)
+            if delete_count:
+                tree.delete(selected_item)
+                messagebox.showinfo("Success", "Tillstånd borttaget/Permit deleted", parent=permits_window)
+            else:
+                messagebox.showerror("Error", "Failed to delete permit", parent=permits_window)
 
             # Refresh permits
             tree.delete(*tree.get_children())
             permits = database.get_permits()
             for permit in permits:
-                tree.insert('', 'end', values=permit)
+                tree.insert('', 'end', values=(permit['_id'], permit['name'], permit['position'], permit['permit_number'], permit['valid_until'], permit['file_path']))
 
-
-        delete_button = ctk.CTkButton(permits_window, text="Ta bort/Delete", command=delete_selected, fg_color='purple')
+        delete_button = ctk.CTkButton(permits_window, text="Delete Selected Permit", command=delete_selected)
         delete_button.pack(pady=10)
 
     def resource_path(self, relative_path):
