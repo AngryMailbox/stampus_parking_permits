@@ -7,7 +7,7 @@ a = Analysis(
     ['GUI.py'],
     pathex=['.'],
     binaries=[],
-    datas=[('logo.png', '.'), ('logo.ico', '.'), ('permits.db', '.'), ("_internal;_internal")],
+    datas=[('logo.png', '.'), ('logo.ico', '.')],
     hiddenimports=['babel.numbers'],
     hookspath=[],
     runtime_hooks=[],
