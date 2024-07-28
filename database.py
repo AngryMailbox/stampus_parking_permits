@@ -4,16 +4,20 @@ from bson import ObjectId
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from urllib.parse import quote_plus
-from decouple import config
 
-uri_template = config("MONGODB_URI")
-password = config("MONGODB_PASSWORD") 
+uri_template = os.getenv("STAMPUS_MONGODB_URI")
+password = os.getenv("STAMPUS_MONGODB_PASSWORD")
+
+if not uri_template or not password:
+    raise ValueError("Environment variables STAMPUS_MONGODB_URI and STAMPUS_MONGODB_PASSWORD must be set")
+
 encoded_password = quote_plus(password)
 uri = uri_template.replace("<password>", encoded_password)
 
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['permits_database']
 collection = db['permits']
+
 
 def resource_path(relative_path):
     try:
